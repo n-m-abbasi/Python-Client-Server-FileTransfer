@@ -18,7 +18,6 @@ num_files = int(conn.recv(1024).decode())
 conn.send(b'ACK')
 print(f"[INFO] Expecting {num_files} files...")
 
-# پوشه‌ی ذخیره‌سازی فایل‌های دریافتی
 save_dir = "received_files"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -30,7 +29,6 @@ for i in range(num_files):
     filesize = int(conn.recv(1024).decode())
     conn.send(b'ACK')
 
-    # ذخیره با نام جدید در پوشه‌ی جدا
     save_path = os.path.join(save_dir, f"received_{i}_{filename}")
     with open(save_path, 'wb') as f:
         remaining = filesize
@@ -40,6 +38,7 @@ for i in range(num_files):
                 break
             f.write(data)
             remaining -= len(data)
+
     received_files.append(save_path)
     print(f"[SUCCESS] Received {filename} -> saved as {save_path}")
 
@@ -56,6 +55,7 @@ with open(zip_filename, 'rb') as f:
         if not data:
             break
         conn.send(data)
+
 conn.send(b'EOF')
 
 print("[SUCCESS] Zip file sent back to client.")
